@@ -1,0 +1,91 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNgntiGkNBEDEf0wWjiCVP9",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Sanjida-183/Operating-System/blob/main/SJf(Preemptive)\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class Process:\n",
+        "    def __init__(self, pid, at, bt):\n",
+        "        self.pid = pid\n",
+        "        self.at = at\n",
+        "        self.bt = bt\n",
+        "        self.rt = bt\n",
+        "        self.ct = 0\n",
+        "        self.tat = 0\n",
+        "        self.wt = 0\n",
+        "\n",
+        "n = int(input(\"Enter the number of processes: \"))\n",
+        "p = []\n",
+        "for i in range(n):\n",
+        "    at = int(input(f\"P{i+1} Arrival Time: \"))\n",
+        "    bt = int(input(f\"P{i+1} Burst Time: \"))\n",
+        "    p.append(Process(f\"P{i+1}\", at, bt))\n",
+        "\n",
+        "time = 0\n",
+        "done = 0\n",
+        "tq = 2\n",
+        "queue = []\n",
+        "while done < n:\n",
+        "\n",
+        "    for x in p:\n",
+        "        if x.at <= time and x.rt > 0 and x not in queue:\n",
+        "            queue.append(x)\n",
+        "    if not queue:\n",
+        "        time += 1\n",
+        "        continue\n",
+        "    cur = queue.pop(0)\n",
+        "\n",
+        "    run_time = min(tq, cur.rt)\n",
+        "    cur.rt -= run_time\n",
+        "    time += run_time\n",
+        "\n",
+        "    for x in p:\n",
+        "        if x.at <= time and x.rt > 0 and x not in queue and x != cur:\n",
+        "            queue.append(x)\n",
+        "    if cur.rt == 0:\n",
+        "        cur.ct = time\n",
+        "        cur.tat = cur.ct - cur.at\n",
+        "        cur.wt = cur.tat - cur.bt\n",
+        "        done += 1\n",
+        "    else:\n",
+        "        queue.append(cur)\n",
+        "\n",
+        "print(\"\\nPID\\tAT\\tBT\\tCT\\tTAT\\tWT\")\n",
+        "for x in p:\n",
+        "    print(x.pid, x.at, x.bt, x.ct, x.tat, x.wt, sep=\"\\t\")\n",
+        "print(\"\\nAverage TAT:\", sum(x.tat for x in p) / n)\n",
+        "print(\"Average WT:\", sum(x.wt for x in p) / n)"
+      ],
+      "metadata": {
+        "id": "g1xLJQACI8pq"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
