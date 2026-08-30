@@ -1,0 +1,78 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPLZ8amQim3h9+5AZ25P3yl",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Sanjida-183/Operating-System/blob/main/SJF(Non-Preemptive)\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class Process:\n",
+        "    def __init__(self, pid, at, bt):\n",
+        "        self.pid = pid\n",
+        "        self.at = at\n",
+        "        self.bt = bt\n",
+        "        self.rt = bt\n",
+        "        self.ct = 0\n",
+        "        self.tat = 0\n",
+        "        self.wt = 0\n",
+        "\n",
+        "n = int(input(\"Enter the number of processes: \"))\n",
+        "p = []\n",
+        "for i in range(n):\n",
+        "    at = int(input(f\"P{i+1} Arrival Time: \"))\n",
+        "    bt = int(input(f\"P{i+1} Burst Time: \"))\n",
+        "    p.append(Process(f\"P{i+1}\", at ,bt))\n",
+        "\n",
+        "time = 0\n",
+        "done = 0\n",
+        "while done < n :\n",
+        "    ready = [x for x in p if x.at <= time and x.rt > 0]\n",
+        "    if not ready :\n",
+        "        time += 1\n",
+        "        continue\n",
+        "    cur = min(ready, key = lambda x : x.rt)\n",
+        "    cur.rt -= 1\n",
+        "    time += 1\n",
+        "    if cur.rt == 0 :\n",
+        "        cur.ct = time\n",
+        "        cur.tat = cur.ct - cur.at\n",
+        "        cur.wt = cur.tat - cur.bt\n",
+        "        done += 1\n",
+        "\n",
+        "print(\"\\nPID\\tAT\\tBT\\tCT\\tTAT\\tWT\")\n",
+        "for x in p :\n",
+        "    print(x.pid, x.at, x.bt, x.ct, x.tat, x.wt, sep=\"\\t\")\n",
+        "print(\"\\nAverage TAT: \", sum(x.tat for x in p)/n)\n",
+        "print(\"Average WT: \", sum(x.wt for x in p)/n)\n"
+      ],
+      "metadata": {
+        "id": "v3F9ZqELH-vS"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
